@@ -1,19 +1,30 @@
-# Stage 1: Build the application
-FROM maven:3.9.3-eclipse-temurin-21 as builder
+# Stage 1 - custom Maven builder based on eclipse-temurin 21-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine as builder
+
+RUN apk add --no-cache bash procps curl tar openssh-client
+
+ENV MAVEN_HOME=/usr/share/maven
+
+# Copy Maven binaries from official Maven JDK17 image
+COPY --from=maven:3.9.9-eclipse-temurin-17 ${MAVEN_HOME} ${MAVEN_HOME}
+COPY --from=maven:3.9.9-eclipse-temurin-17 /usr/local/bin/mvn-entrypoint.sh /usr/local/bin/mvn-entrypoint.sh
+COPY --from=maven:3.9.9-eclipse-temurin-17 /usr/share/maven/ref/settings-docker.xml /usr/share/maven/ref/settings-docker.xml
+
+RUN ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
+
+ENV MAVEN_CONFIG="/root/.m2"
 
 WORKDIR /app
 
-# Copy pom.xml and download dependencies (cache layers)
+# Copy project files
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copy source code
 COPY src ./src
 
-# Package the app (skip tests to speed up)
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run the application
+# Stage 2 - run stage based on eclipse-temurin 21 JRE Alpine
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
