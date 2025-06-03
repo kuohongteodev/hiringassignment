@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CrawlsRepository extends JpaRepository<Crawls, Long> {
+    Crawls findFirstByOrderByCrawlIdDesc();
 }

@@ -1,50 +1,54 @@
 package com.hiringassignment.hiringassignment.util;
 
-import com.hiringassignment.hiringassignment.dto.Child;
-import com.hiringassignment.hiringassignment.dto.ListingData;
-import com.hiringassignment.hiringassignment.dto.PostData;
+import com.hiringassignment.hiringassignment.entity.RedditTopPost;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
 public class ExcelUtil {
-    public static ByteArrayOutputStream generateExcelFromListing(ListingData listingData) throws IOException {
+
+    public static ByteArrayOutputStream generateExcelFromPosts(List<RedditTopPost> posts) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Posts");
+            Sheet sheet = workbook.createSheet("Reddit Top Posts");
+
+            String[] headers = {
+                    "CrawlId", "PostId", "Title", "Author", "Subreddit", "Score",
+                    "Url", "Permalink", "NumComments", "CreatedAt"
+            };
 
             Row headerRow = sheet.createRow(0);
-            String[] headers = {"Id", "Title", "Author", "Subreddit", "Ups", "Downs", "Score", "Url", "Permalink", "CreatedUtc", "Thumbnail"};
             for (int i = 0; i < headers.length; i++) {
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headers[i]);
             }
 
-            List<Child> children = listingData.getChildren();
             int rowIdx = 1;
-            if (children != null) {
-                for (Child child : children) {
-                    PostData post = child.getData();
-                    if (post == null) continue;
-
+            if (posts != null) {
+                for (RedditTopPost post : posts) {
                     Row row = sheet.createRow(rowIdx++);
-                    row.createCell(0).setCellValue(post.getId());
-                    row.createCell(1).setCellValue(post.getTitle());
-                    row.createCell(2).setCellValue(post.getAuthor());
-                    row.createCell(3).setCellValue(post.getSubreddit());
-                    row.createCell(4).setCellValue(post.getUps());
-                    row.createCell(5).setCellValue(post.getDowns());
-                    row.createCell(6).setCellValue(post.getScore());
-                    row.createCell(7).setCellValue(post.getUrl());
-                    row.createCell(8).setCellValue(post.getPermalink());
-                    row.createCell(9).setCellValue(post.getCreatedUtc());
-                    row.createCell(10).setCellValue(post.getThumbnail());
+
+                    if (post.getId() != null) {
+                        row.createCell(0).setCellValue(post.getId().getCrawlId() != null ? post.getId().getCrawlId() : 0);
+                        row.createCell(1).setCellValue(post.getId().getId() != null ? post.getId().getId() : "");
+                    } else {
+                        row.createCell(0).setCellValue("");
+                        row.createCell(1).setCellValue("");
+                    }
+
+                    row.createCell(2).setCellValue(post.getTitle() != null ? post.getTitle() : "");
+                    row.createCell(3).setCellValue(post.getAuthor() != null ? post.getAuthor() : "");
+                    row.createCell(4).setCellValue(post.getSubreddit() != null ? post.getSubreddit() : "");
+                    row.createCell(5).setCellValue(post.getScore() != null ? post.getScore() : 0);
+                    row.createCell(6).setCellValue(post.getUrl() != null ? post.getUrl() : "");
+                    row.createCell(7).setCellValue(post.getPermalink() != null ? post.getPermalink() : "");
+                    row.createCell(8).setCellValue(post.getNumComments() != null ? post.getNumComments() : 0);
+                    row.createCell(9).setCellValue(post.getCreatedAt() != null ? post.getCreatedAt().toString() : "");
                 }
             }
 
