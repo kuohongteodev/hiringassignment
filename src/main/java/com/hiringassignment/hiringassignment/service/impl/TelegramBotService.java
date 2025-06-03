@@ -118,7 +118,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
                 .collect(Collectors.groupingBy(RedditTopPost::getSubreddit, Collectors.counting()));
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<b>🔥 Trending Memes Report</b>\n\n");
+        sb.append("🔥 Trending Memes Report\n\n");
         sb.append("Total memes: ").append(posts.size()).append("\n");
         sb.append(String.format("Average score: %.0f\n", avgScore));
 
@@ -133,7 +133,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
         }
         sb.append("\n");
 
-        sb.append("<b>📊 Posts per Subreddit:</b>\n");
+        sb.append("📊 Posts per Subreddit:\n");
         subredditCount.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(3) // top 3
