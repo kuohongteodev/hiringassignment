@@ -42,7 +42,7 @@ public class RedditTopPost {
     private String permalink;
 
     @Column(name = "num_comments")
-    private Integer numComments;
+    private Long numComments;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
