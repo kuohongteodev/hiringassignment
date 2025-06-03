@@ -192,7 +192,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
             response.append("\n\n");
         }
 
-        response.append("Use /gettopmemes [subreddit] to filter memes by subreddit.");
+        response.append("Use /gettrendingmemes to get memes report and more!");
 
         SendMessage message = new SendMessage(chatId, response.toString());
         message.setParseMode("HTML");

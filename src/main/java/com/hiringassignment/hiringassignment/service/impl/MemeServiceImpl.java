@@ -29,7 +29,7 @@ public class MemeServiceImpl implements MemeService {
     private final RedditTopPostRepository redditTopPostRepository;
 
     @Override
-    @Scheduled(fixedRate = 30 * 60 * 1000)
+    @Scheduled(fixedRate = 180 * 60 * 1000)
     public void getMeme() {
         RestTemplate restTemplate = new RestTemplate();
 
