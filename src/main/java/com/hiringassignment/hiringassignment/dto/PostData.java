@@ -20,6 +20,9 @@ public class PostData {
     private String url;
     private String permalink;
 
+    @JsonProperty("num_comments")
+    private Long numComments;
+
     @JsonProperty("created_utc")
     private long createdUtc;
 

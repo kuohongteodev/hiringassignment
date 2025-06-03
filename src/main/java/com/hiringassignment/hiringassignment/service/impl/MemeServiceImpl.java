@@ -64,6 +64,7 @@ public class MemeServiceImpl implements MemeService {
                             post.setScore(postData.getScore());
                             post.setUrl(postData.getUrl());
                             post.setPermalink(postData.getPermalink());
+                            post.setNumComments(postData.getNumComments());
 
                             post.setCreatedAt(Instant.ofEpochSecond(postData.getCreatedUtc())
                                     .atZone(ZoneId.systemDefault()).toLocalDateTime());
