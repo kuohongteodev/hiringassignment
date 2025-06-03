@@ -10,6 +10,7 @@ import com.hiringassignment.hiringassignment.entity.RedditTopPostID;
 import com.hiringassignment.hiringassignment.service.MemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -27,7 +29,8 @@ public class MemeServiceImpl implements MemeService {
     private final RedditTopPostRepository redditTopPostRepository;
 
     @Override
-    public PostDTO getMeme() {
+    @Scheduled(fixedRate = 30 * 60 * 1000)
+    public void getMeme() {
         RestTemplate restTemplate = new RestTemplate();
 
         String url = "https://www.reddit.com/r/memes/top.json?t=day&limit=20";
@@ -72,9 +75,17 @@ public class MemeServiceImpl implements MemeService {
                 redditTopPostRepository.saveAll(postsToSave);
 
             }
-            return response.getBody();
         } catch (RestClientException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<RedditTopPost> getCrawledPost() {
+        Crawls latestCrawl = crawlsRepository.findFirstByOrderByCrawlIdDesc();
+        if (latestCrawl == null) {
+            return Collections.emptyList();
+        }
+        return redditTopPostRepository.findByCrawl(latestCrawl);
     }
 }

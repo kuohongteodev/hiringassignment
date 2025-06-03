@@ -1,7 +1,11 @@
 package com.hiringassignment.hiringassignment.service;
 
-import com.hiringassignment.hiringassignment.dto.PostDTO;
+import com.hiringassignment.hiringassignment.entity.RedditTopPost;
+
+import java.util.List;
 
 public interface MemeService {
-    PostDTO getMeme();
+    void getMeme();
+
+    List<RedditTopPost> getCrawledPost();
 }

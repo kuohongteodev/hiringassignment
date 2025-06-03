@@ -1,6 +1,7 @@
 package com.hiringassignment.hiringassignment.service.impl;
 
 import com.hiringassignment.hiringassignment.dto.PostDTO;
+import com.hiringassignment.hiringassignment.entity.RedditTopPost;
 import com.hiringassignment.hiringassignment.service.MemeService;
 import com.hiringassignment.hiringassignment.util.ExcelUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -44,9 +46,9 @@ public class TelegramBotService extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText().trim();
 
             if (messageText.equalsIgnoreCase("/gettrendingmemes")) {
-                PostDTO postDTO = memeService.getMeme();
+                List<RedditTopPost> redditTopPostList = memeService.getCrawledPost();
                 try {
-                    ByteArrayOutputStream byteArrayOutputStream = ExcelUtil.generateExcelFromListing(postDTO.getData());
+                    ByteArrayOutputStream byteArrayOutputStream = ExcelUtil.generateExcelFromPosts(redditTopPostList);
                     sendExcelFile(chatId, byteArrayOutputStream);
                 } catch (IOException | TelegramApiException e) {
                     log.error(e.getMessage());
